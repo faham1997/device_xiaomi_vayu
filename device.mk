@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+TARGET_USE_DYNAMIC_PARTITIONS := true
 TARGET_SUPPORTS_QUICK_TAP := true
 
 ifeq ($(TARGET_USE_DYNAMIC_PARTITIONS),true)
@@ -23,8 +24,19 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # Setup dalvik vm configs
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
+# Boot animation
+TARGET_SCREEN_HEIGHT := 2400
+TARGET_SCREEN_WIDTH := 1080
+
+PRODUCT_SHIPPING_API_LEVEL := 30
+BOARD_SHIPPING_API_LEVEL := 30
+
 # Camera
 $(call inherit-product-if-exists, vendor/miuicamera/config.mk)
+
+# Device uses high-density artwork where available
+PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -231,7 +243,8 @@ PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service.xiaomi_msmnile
 
 PRODUCT_PACKAGES += \
-    vendor.xiaomi.hardware.fingerprintextension@1.0.vendor
+    vendor.xiaomi.hardware.fingerprintextension@1.0.vendor \
+    libkeymaster_messages.vendor
 
 # FM
 PRODUCT_PACKAGES += \
@@ -458,6 +471,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.usb@1.0-service
 
+# VNDK
+PRODUCT_TARGET_VNDK_VERSION := 30
+PRODUCT_EXTRA_VNDK_VERSIONS := 30
+
 # Vendor service manager
 PRODUCT_PACKAGES += \
     vndservicemanager
@@ -490,12 +507,9 @@ PRODUCT_PACKAGES += \
     libnl \
     libwfdaac_vendor
 
-#PRODUCT_BOOT_JARS += \
-#    WfdCommon
-
 # Wlan
 PRODUCT_CFI_INCLUDE_PATHS += \
     hardware/qcom-caf/wlan/qcwcn/wpa_supplicant_8_lib
 
 # Inherit the proprietary files
-$(call inherit-product, vendor/xiaomi/sm8150-common/sm8150-common-vendor.mk)
+$(call inherit-product, vendor/xiaomi/vayu/vayu-vendor.mk)
